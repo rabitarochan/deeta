@@ -1,0 +1,3 @@
+rootProject.name = 'deeta'
+
+include 'deeta-core'
