@@ -39,9 +39,14 @@ public class DefaultResolver implements DeetaResolver {
         return resolveInternal(key, context);
     }
 
+    @Override
+    public String fetch(String key, DeetaContext context) {
+        return fetcher.fetch(key, context);
+    }
+
     protected String resolveInternal(String key, DeetaContext context) {
         String res = key;
-        res = numeric(res);
+        res = resolveNumeric(res);
         res = variable(res, context);
         res = unescape(res);
         return res;
@@ -51,13 +56,11 @@ public class DefaultResolver implements DeetaResolver {
         return "NULL";
     }
 
-    private String numeric(String s) {
+    protected String resolveNumeric(String s) {
         String res = s;
         while (true) {
             Matcher m = NUMERIC_PATTERN.matcher(res);
-            if (!m.find()) {
-                break;
-            }
+            if (!m.find()) { break; }
 
             String matchString = m.group();
             res = m.replaceFirst(generateNumeric(matchString.length()));
@@ -69,30 +72,20 @@ public class DefaultResolver implements DeetaResolver {
         String res = s;
         while (true) {
             Matcher m = VARIABLE_PATTERN.matcher(res);
-            if (!m.find()) {
-                break;
-            }
+            if (!m.find()) { break; }
 
             String matchString = m.group();
             String key = matchString.substring(2, matchString.length() - 1);
-            LOG.debug("key:{}", key);
+            LOG.debug("[key:{}]", key);
 
-            // key fix
             int dotCount = StringUtils.count(key, ".");
             if (dotCount == 0) {
-                DeetaGenerator generator = generators.resolve(key);
-                if (generator == null) {
-                    LOG.warn("Unresolved generator.[key:{}]", key);
-                    res = m.replaceFirst(unresolved(key, context));
-                    continue;
-                } else {
-                    res = m.replaceFirst(generator.generate(context));
-                    continue;
-                }
+                res = m.replaceFirst(resolveFromGenerator(/* alias */ key, context));
+                continue;
             } else if (dotCount == 1) {
-                DeetaGenerator generator = generators.resolve(key);
-                if (generator != null) {
-                    res = m.replaceFirst(generator.generate(context));
+                String generated = tryResolveFromGenerator(key, context);
+                if (generated != null) {
+                    res = m.replaceFirst(generated);
                     continue;
                 }
 
@@ -100,10 +93,25 @@ public class DefaultResolver implements DeetaResolver {
                 LOG.debug("Unresolved generator. Try with default key.[key:{}]", key);
             }
 
-            String replacement = resolve(fetcher.fetch(key, context), context);
+            String replacement = resolve(fetch(key, context), context);
             res = m.replaceFirst(replacement);
         }
         return res;
+    }
+
+    private String resolveFromGenerator(String alias, DeetaContext context) {
+        String res = tryResolveFromGenerator(alias, context);
+        if (res != null) { return res; }
+
+        LOG.warn("Unresolved generator.[alias:{}]", alias);
+        return unresolved(alias, context);
+    }
+
+    private String tryResolveFromGenerator(String key, DeetaContext context) {
+        DeetaGenerator generator = generators.resolve(key);
+        if (generator == null) { return null; }
+
+        return generator.generate(context);
     }
 
     private String unescape(String s) {

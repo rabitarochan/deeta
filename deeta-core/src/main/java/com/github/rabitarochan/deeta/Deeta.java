@@ -22,14 +22,24 @@ public class Deeta {
     }
 
     public String resolve(String key) {
-        return resolve(key, 1);
+        return resolve(key, createContext());
     }
 
     @SuppressWarnings("unchecked")
     public String resolve(String key, int seq) {
-        DeetaContext context = new DeetaContext(seq, random);
-        String x = resolver.resolve(key, context);
-        return x;
+        return resolve(key, createContext(seq));
+    }
+
+    public String resolve(String key, DeetaContext context) {
+        return resolver.resolve(key, context);
+    }
+
+    public DeetaContext createContext() {
+        return createContext(1);
+    }
+
+    public DeetaContext createContext(int seq) {
+        return new DeetaContext(seq, resolver, random);
     }
 
 }

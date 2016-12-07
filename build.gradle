@@ -10,29 +10,26 @@ buildscript {
     }
 }
 
-ext {
-    deetaVersion = '0.1.0-SNAPSHOT'
-}
-
-allprojects {
-    apply plugin: 'java'
-
-    group = 'com.github.rabitarochan'
-
-    sourceCompatibility = 1.6
-    targetCompatibility = 1.6
-}
+group = 'com.github.rabitarochan'
+version = '0.1.0-SNAPSHOT'
 
 subprojects {
     repositories {
         mavenCentral()
     }
 
+    group = rootProject.group
+    version = rootProject.version
+
+    apply plugin: 'java'
     apply plugin: 'propdeps'
     apply plugin: 'propdeps-maven'
     apply plugin: 'propdeps-idea'
     apply plugin: 'propdeps-eclipse'
     apply plugin: 'com.github.ben-manes.versions'
+
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
 
     dependencies {
     }

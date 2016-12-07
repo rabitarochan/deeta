@@ -21,6 +21,7 @@ public class DefaultFetcher implements DeetaFetcher {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public String fetch(String key, DeetaContext context) {
         Object obj = fetchRecursive(key, valueMap);
 
@@ -28,11 +29,14 @@ public class DefaultFetcher implements DeetaFetcher {
             return (String) obj;
         }
         if (obj instanceof List) {
-            List<String> xs = (List<String>) obj;
-            return xs.get(context.getRandom().nextInt(xs.size()));
+            return fetchByList((List<String>) obj, context);
         }
 
-        return String.valueOf(obj);
+        if (obj == null) {
+            return null;
+        } else {
+            return obj.toString();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -61,6 +65,10 @@ public class DefaultFetcher implements DeetaFetcher {
         Map<String, Object> nextMap = (Map<String, Object>) m.get(currentKey);
 
         return fetchRecursive(nextKey, nextMap);
+    }
+
+    private String fetchByList(List<String> xs, DeetaContext context) {
+        return xs.get(context.getRandom().nextInt(xs.size()));
     }
 
 }
