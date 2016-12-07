@@ -1,6 +1,6 @@
 package com.github.rabitarochan.deeta;
 
-import com.github.rabitarochan.deeta.annotations.DeetaDataSource;
+import com.github.rabitarochan.deeta.annotation.DeetaDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

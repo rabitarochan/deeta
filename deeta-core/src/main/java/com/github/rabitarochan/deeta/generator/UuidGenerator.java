@@ -2,7 +2,7 @@ package com.github.rabitarochan.deeta.generator;
 
 import com.github.rabitarochan.deeta.DeetaContext;
 import com.github.rabitarochan.deeta.DeetaGenerator;
-import com.github.rabitarochan.deeta.annotations.DeetaDataSource;
+import com.github.rabitarochan.deeta.annotation.DeetaDataSource;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package com.github.rabitarochan.deeta.annotations;
+package com.github.rabitarochan.deeta.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
