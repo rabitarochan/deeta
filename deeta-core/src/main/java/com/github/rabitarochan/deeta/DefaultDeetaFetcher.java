@@ -1,7 +1,5 @@
-package com.github.rabitarochan.deeta.fetcher;
+package com.github.rabitarochan.deeta;
 
-import com.github.rabitarochan.deeta.DeetaContext;
-import com.github.rabitarochan.deeta.DeetaFetcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -10,13 +8,13 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultFetcher implements DeetaFetcher {
+public class DefaultDeetaFetcher implements DeetaFetcher {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultFetcher.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultDeetaFetcher.class);
 
     private final Map<String, Object> valueMap;
 
-    public DefaultFetcher() {
+    public DefaultDeetaFetcher() {
         this.valueMap = load();
     }
 

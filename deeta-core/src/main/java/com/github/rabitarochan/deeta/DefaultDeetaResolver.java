@@ -1,6 +1,5 @@
-package com.github.rabitarochan.deeta.resolver;
+package com.github.rabitarochan.deeta;
 
-import com.github.rabitarochan.deeta.*;
 import com.github.rabitarochan.deeta.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DefaultResolver implements DeetaResolver {
+public class DefaultDeetaResolver implements DeetaResolver {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultResolver.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultDeetaResolver.class);
 
     private static final String DEFAULT_KEY_PREFIX = "deeta";
 
@@ -28,7 +27,7 @@ public class DefaultResolver implements DeetaResolver {
 
     private final DeetaGenerators generators;
 
-    public DefaultResolver(DeetaFetcher fetcher, DeetaRandom random) {
+    public DefaultDeetaResolver(DeetaFetcher fetcher, DeetaRandom random) {
         this.fetcher = fetcher;
         this.random = random;
         this.generators = DeetaGenerators.getInstance();

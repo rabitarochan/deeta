@@ -1,7 +1,5 @@
 package com.github.rabitarochan.deeta;
 
-import com.github.rabitarochan.deeta.fetcher.DefaultFetcher;
-import com.github.rabitarochan.deeta.resolver.DefaultResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +14,9 @@ public class Deeta {
     private final DeetaResolver resolver;
 
     public Deeta() {
-        this.random = new DeetaRandom();
-        this.fetcher = new DefaultFetcher();
-        this.resolver = new DefaultResolver(fetcher, random);
+        this.random = new DefaultDeetaRandom();
+        this.fetcher = new DefaultDeetaFetcher();
+        this.resolver = new DefaultDeetaResolver(fetcher, random);
     }
 
     public String resolve(String key) {
