@@ -39,6 +39,15 @@ public class NumericTest {
     }
 
     @Test
+    public void longNumericTest() {
+        Deeta deeta = new Deeta();
+
+        String res = deeta.resolve("###############");
+        System.out.println(res);
+        assertThat(res.matches("\\d{15}"), is(true));
+    }
+
+    @Test
     public void escapedSimpleNumericTest() {
         Deeta deeta = new Deeta();
 

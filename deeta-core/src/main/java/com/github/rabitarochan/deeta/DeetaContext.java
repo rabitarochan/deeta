@@ -9,8 +9,6 @@ public class DeetaContext {
 
     private final Map<String, Integer> indexMap;
 
-    private final Map<String, Object> envMap;
-
     private final DeetaResolver resolver;
 
     private final DeetaRandom random;
@@ -22,7 +20,6 @@ public class DeetaContext {
     public DeetaContext(int seq, DeetaResolver resolver, DeetaRandom random) {
         this.seq = seq;
         this.indexMap = new HashMap<String, Integer>();
-        this.envMap = new HashMap<String, Object>();
         this.resolver = resolver;
         this.random = random;
     }
@@ -37,14 +34,6 @@ public class DeetaContext {
 
     public void setIndex(String key, int index) {
         indexMap.put(key, index);
-    }
-
-    public Object getEnv(String key) {
-        return envMap.get(key);
-    }
-
-    public void setEnv(String key, Object obj) {
-        envMap.put(key, obj);
     }
 
     public DeetaResolver getResolver() {

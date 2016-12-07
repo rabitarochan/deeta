@@ -92,8 +92,13 @@ public class DefaultDeetaResolver implements DeetaResolver {
                 LOG.debug("Unresolved generator. Try with default key.[key:{}]", key);
             }
 
-            String replacement = resolve(fetch(key, context), context);
-            res = m.replaceFirst(replacement);
+            String fetched = fetch(key, context);
+            if (fetched == null) {
+                res = m.replaceFirst(unresolved(key, context));
+            } else {
+                String replacement = resolve(fetched, context);
+                res = m.replaceFirst(replacement);
+            }
         }
         return res;
     }
@@ -121,10 +126,18 @@ public class DefaultDeetaResolver implements DeetaResolver {
     }
 
     private String generateNumeric(int length) {
-        String prefix = StringUtils.repeat("0", length);
-        int max = Integer.valueOf(StringUtils.repeat("9", length));
-        String s = prefix + String.valueOf(random.nextInt(0, max));
-        return StringUtils.right(s, length);
+        int len = length;
+        StringBuilder sb = new StringBuilder();
+        while (len > 0) {
+            int genLen = len;
+            if (len >= 18) { genLen = 18; }
+            String prefix = StringUtils.repeat("0", genLen);
+            long max = Long.valueOf(StringUtils.repeat("9", genLen));
+            String s = prefix + String.valueOf(random.nextLong(0, max));
+            sb.append(StringUtils.right(s, genLen));
+            len -= genLen;
+        }
+        return sb.toString();
     }
 
 }
