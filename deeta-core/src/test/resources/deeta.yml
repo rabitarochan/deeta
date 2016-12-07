@@ -1,12 +1,16 @@
 test:
-  case1:
-    singleValue: "test value"
-    multipleValues: ["first value", "second value"]
-  case2:
-    numeric: "###"
-    multipleNumerics: "###-###"
-    escapedNumeric: "\\#\\#\\#"
-    escapedMultipleNumerics: "\\#\\#\\#-\\#\\#\\#"
+  value:
+    const: "test value"
+    multipleConst: ["first value", "second value"]
+  variable:
+    simple: "${test.value.const}"
+    complex1: "${test.value.const} ${test.value.const}"
+    complex2: "${test.value.const} ${test.value.multipleConst}"
+  numeric:
+    simple: "###"
+    multiple: "###-###"
+    escapedSimple: "\\#\\#\\#"
+    escapedMultiple: "\\#\\#\\#-\\#\\#\\#"
   case3:
     variable: "${test.case1.singleValue}"
     multipleVariables: "${test.case1.singleValue} and ${test.case1.multipleValues}"
