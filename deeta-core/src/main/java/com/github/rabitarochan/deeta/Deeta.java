@@ -17,13 +17,18 @@ public class Deeta {
 
     public Deeta() {
         this.random = new DeetaRandom();
-        this.fetcher = new DefaultFetcher(random);
+        this.fetcher = new DefaultFetcher();
         this.resolver = new DefaultResolver(fetcher, random);
     }
 
-    @SuppressWarnings("unchecked")
     public String resolve(String key) {
-        String x = resolver.resolve(key, new String[] {});
+        return resolve(key, 1);
+    }
+
+    @SuppressWarnings("unchecked")
+    public String resolve(String key, int seq) {
+        DeetaContext context = new DeetaContext(seq, random);
+        String x = resolver.resolve(key, context);
         return x;
     }
 
