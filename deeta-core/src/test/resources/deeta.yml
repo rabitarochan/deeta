@@ -1,0 +1,13 @@
+test:
+  case1:
+    singleValue: "test value"
+    multipleValues: ["first value", "second value"]
+  case2:
+    numeric: "###"
+    multipleNumerics: "###-###"
+    escapedNumeric: "\\#\\#\\#"
+    escapedMultipleNumerics: "\\#\\#\\#-\\#\\#\\#"
+  case3:
+    variable: "${test.case1.singleValue}"
+    multipleVariables: "${test.case1.singleValue} and ${test.case1.multipleValues}"
+    escapedVariable: "\\${test.case1.singleValue}"

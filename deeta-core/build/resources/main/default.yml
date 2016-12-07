@@ -1,9 +1,0 @@
-name:
-  name: ["rabitarochan"]
-  single: "single value"
-  multi: ["one", "two"]
-  numeric: "aaa###"
-  variable: "test-${name.multi}"
-  test:
-    - "My name is ${name.name}"
-    - "I'm ${name.multi} years old."

@@ -40,7 +40,7 @@ public class DefaultDeetaFetcher implements DeetaFetcher {
     @SuppressWarnings("unchecked")
     protected Map<String, Object> load() {
         Yaml yaml = new Yaml();
-        InputStream stream = getClass().getResourceAsStream("/default.yml");
+        InputStream stream = getClass().getResourceAsStream("/deeta.yml");
         Map<String, Object> map = (Map<String, Object>) yaml.loadAs(stream, Map.class);
         return map;
     }
