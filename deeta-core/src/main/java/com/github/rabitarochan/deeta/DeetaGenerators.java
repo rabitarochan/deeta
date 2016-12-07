@@ -1,12 +1,16 @@
 package com.github.rabitarochan.deeta;
 
 import com.github.rabitarochan.deeta.annotations.DeetaDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 
 public class DeetaGenerators {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DeetaGenerators.class);
 
     private final Map<String, DeetaGenerator> generatorMap;
 
@@ -49,13 +53,24 @@ public class DeetaGenerators {
     private void register(DeetaGenerator generator, DeetaDataSource dataSource) {
         if (!dataSource.alias().equals("")) {
             generatorMap.put(dataSource.alias(), generator);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Register generator alias. [alias:{}, generator:{}]", dataSource.alias(), generator.getClass().getName());
+            }
         }
 
         String key = dataSource.name().toLowerCase() + "." + generator.getClass().getSimpleName().toLowerCase();
         generatorMap.put(key, generator);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Register generator. [name:{}, generator:{}]", key, generator.getClass().getName());
+        }
 
         if (key.endsWith("generator")) {
-            generatorMap.put(key.substring(0, key.length() - "generator".length()), generator);
+            String name = key.substring(0, key.length() - "generator".length());
+            generatorMap.put(name, generator);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Register generator. [name, generator:{}]", name, generator.getClass().getName());
+            }
         }
     }
 

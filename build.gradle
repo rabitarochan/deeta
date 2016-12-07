@@ -1,6 +1,12 @@
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
+        maven { url 'https://repo.spring.io/plugins-release' }
+    }
+    dependencies {
+        classpath('com.github.ben-manes:gradle-versions-plugin:0.13.0')
+        classpath('org.springframework.build.gradle:propdeps-plugin:0.0.7')
     }
 }
 
@@ -21,6 +27,12 @@ subprojects {
     repositories {
         mavenCentral()
     }
+
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-eclipse'
+    apply plugin: 'com.github.ben-manes.versions'
 
     dependencies {
     }

@@ -1,5 +1,7 @@
 dependencies {
-    compile('org.yaml:snakeyaml:1.16')
+    compile('org.yaml:snakeyaml:1.17')
 
     testCompile('junit:junit:4.12')
+
+    optional('org.slf4j:slf4j-api:1.7.21')
 }

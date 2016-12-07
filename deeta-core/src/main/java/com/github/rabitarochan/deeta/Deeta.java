@@ -2,12 +2,12 @@ package com.github.rabitarochan.deeta;
 
 import com.github.rabitarochan.deeta.fetcher.DefaultFetcher;
 import com.github.rabitarochan.deeta.resolver.DefaultResolver;
-
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Deeta {
 
-    private static final Logger LOG = Logger.getLogger(Deeta.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Deeta.class);
 
     private final DeetaRandom random;
 

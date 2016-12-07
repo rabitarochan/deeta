@@ -1,14 +1,18 @@
 package com.github.rabitarochan.deeta.resolver;
 
 import com.github.rabitarochan.deeta.*;
+import com.github.rabitarochan.deeta.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DefaultResolver implements DeetaResolver {
 
-    private static final Logger LOG = Logger.getLogger(DefaultResolver.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultResolver.class);
+
+    private static final String DEFAULT_KEY_PREFIX = "deeta";
 
     private static final String VARIABLE_PATTERN_STRING = "(?<!\\\\)\\$\\{.+?\\}";
 
@@ -43,6 +47,10 @@ public class DefaultResolver implements DeetaResolver {
         return res;
     }
 
+    protected String unresolved(String key, DeetaContext context) {
+        return "NULL";
+    }
+
     private String numeric(String s) {
         String res = s;
         while (true) {
@@ -67,14 +75,15 @@ public class DefaultResolver implements DeetaResolver {
 
             String matchString = m.group();
             String key = matchString.substring(2, matchString.length() - 1);
-            LOG.finer("key:" + key);
+            LOG.debug("key:{}", key);
 
             // key fix
-            int dotCount = countDot(key);
+            int dotCount = StringUtils.count(key, ".");
             if (dotCount == 0) {
                 DeetaGenerator generator = generators.resolve(key);
                 if (generator == null) {
-                    res = m.replaceFirst("NULL"); // TODO unresolve key.
+                    LOG.warn("Unresolved generator.[key:{}]", key);
+                    res = m.replaceFirst(unresolved(key, context));
                     continue;
                 } else {
                     res = m.replaceFirst(generator.generate(context));
@@ -87,7 +96,8 @@ public class DefaultResolver implements DeetaResolver {
                     continue;
                 }
 
-                key = "default." + key;
+                key = DEFAULT_KEY_PREFIX + "." + key;
+                LOG.debug("Unresolved generator. Try with default key.[key:{}]", key);
             }
 
             String replacement = resolve(fetcher.fetch(key, context), context);
@@ -104,30 +114,10 @@ public class DefaultResolver implements DeetaResolver {
     }
 
     private String generateNumeric(int length) {
-        String prefix = repeatString("0", length);
-        int max = Integer.valueOf(repeatString("9", length)) + 1;
-        String s = prefix + String.valueOf(random.nextInt(max));
-        return s.substring(s.length() - length);
-    }
-
-    private String repeatString(String s, int length) {
-        return new String(new char[length]).replace("\0", s);
-    }
-
-    private int countDot(String s) {
-        int length = s.length();
-        int count = 0;
-        int startIndex = 0;
-        while (true) {
-            int res = s.indexOf(".", startIndex);
-            if (res == -1) {
-                break;
-            }
-
-            startIndex = res + 1;
-            count++;
-        }
-        return count;
+        String prefix = StringUtils.repeat("0", length);
+        int max = Integer.valueOf(StringUtils.repeat("9", length));
+        String s = prefix + String.valueOf(random.nextInt(0, max));
+        return StringUtils.right(s, length);
     }
 
 }

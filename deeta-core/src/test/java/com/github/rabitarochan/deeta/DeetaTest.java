@@ -11,7 +11,7 @@ public class DeetaTest {
     public void test() {
         Deeta deeta = new Deeta();
 
-        String res = deeta.resolve("name.name");
+        String res = deeta.resolve("${name.name}");
         assertThat(res, is("rabitarochan"));
     }
 
@@ -19,7 +19,7 @@ public class DeetaTest {
     public void test2() {
         Deeta deeta = new Deeta();
 
-        String res = deeta.resolve("name.single");
+        String res = deeta.resolve("${name.single}");
         assertThat(res, is("single value"));
     }
 
@@ -27,18 +27,18 @@ public class DeetaTest {
     public void test3() {
         Deeta deeta = new Deeta();
 
-        String res = deeta.resolve("name.multi");
+        String res = deeta.resolve("${name.multi}");
         System.out.println(res);
         assertThat(res, anyOf(is("one"), is("two")));
 
-        System.out.println(deeta.resolve("name.variable"));
+        System.out.println(deeta.resolve("${name.variable}"));
     }
 
     @Test
     public void numericTest() {
         Deeta deeta = new Deeta();
 
-        String res = deeta.resolve("name.numeric");
+        String res = deeta.resolve("${name.numeric}");
         System.out.println(res);
     }
 
@@ -46,7 +46,7 @@ public class DeetaTest {
     public void variableTest() {
         Deeta deeta = new Deeta();
 
-        String res = deeta.resolve("name.variable");
+        String res = deeta.resolve("${name.variable}");
         System.out.println(res);
     }
 
@@ -54,7 +54,21 @@ public class DeetaTest {
     public void test4() {
         Deeta deeta = new Deeta();
 
-        System.out.println(deeta.resolve("name.test"));
+        System.out.println(deeta.resolve("${name.test}"));
+    }
+
+    @Test
+    public void test5() {
+        Deeta deeta = new Deeta();
+
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 100000; i++) {
+            String res = deeta.resolve("${seq} ${name.lastName}${name.firstName}", i + 1);
+            if (i < 10) {
+                System.out.println(res);
+            }
+        }
+        System.out.println(String.format("[time: %s ms]", System.currentTimeMillis() - start));
     }
 
 }

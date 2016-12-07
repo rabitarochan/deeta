@@ -2,27 +2,27 @@ package com.github.rabitarochan.deeta.fetcher;
 
 import com.github.rabitarochan.deeta.DeetaContext;
 import com.github.rabitarochan.deeta.DeetaFetcher;
-import com.github.rabitarochan.deeta.DeetaRandom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class DefaultFetcher implements DeetaFetcher {
 
-    private static final Logger LOG = Logger.getLogger(DefaultFetcher.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultFetcher.class);
 
-    private final Map<String, Object> map;
+    private final Map<String, Object> valueMap;
 
     public DefaultFetcher() {
-        this.map = load();
+        this.valueMap = load();
     }
 
     @Override
     public String fetch(String key, DeetaContext context) {
-        Object obj = fetchRecursive(key, map);
+        Object obj = fetchRecursive(key, valueMap);
 
         if (obj instanceof String) {
             return (String) obj;
@@ -48,7 +48,7 @@ public class DefaultFetcher implements DeetaFetcher {
         String[] keys = key.split("\\.");
         String currentKey = keys[0];
 
-        LOG.fine(String.format("[key:%s, keys:%s, currentKey:%s]", key, keys, currentKey));
+        LOG.trace("[key:{}, keys:{}, currentKey:{}]", key, keys, currentKey);
 
         if (!m.containsKey(currentKey)) {
             return null;
