@@ -28,9 +28,16 @@ subprojects {
     apply plugin: 'propdeps-eclipse'
     apply plugin: 'com.github.ben-manes.versions'
 
-    sourceCompatibility = 1.6
-    targetCompatibility = 1.6
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     dependencies {
+    }
+
+    test {
+        testLogging {
+            events "PASSED", "FAILED", "SKIPPED"
+            testLogging.showStandardStreams = true
+        }
     }
 }
