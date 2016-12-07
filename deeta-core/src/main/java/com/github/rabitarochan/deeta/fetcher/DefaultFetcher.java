@@ -1,5 +1,6 @@
 package com.github.rabitarochan.deeta.fetcher;
 
+import com.github.rabitarochan.deeta.DeetaContext;
 import com.github.rabitarochan.deeta.DeetaFetcher;
 import com.github.rabitarochan.deeta.DeetaRandom;
 import org.yaml.snakeyaml.Yaml;
@@ -15,15 +16,12 @@ public class DefaultFetcher implements DeetaFetcher {
 
     private final Map<String, Object> map;
 
-    private final DeetaRandom random;
-
-    public DefaultFetcher(DeetaRandom random) {
+    public DefaultFetcher() {
         this.map = load();
-        this.random = random;
     }
 
     @Override
-    public String fetch(String key) {
+    public String fetch(String key, DeetaContext context) {
         Object obj = fetchRecursive(key, map);
 
         if (obj instanceof String) {
@@ -31,7 +29,7 @@ public class DefaultFetcher implements DeetaFetcher {
         }
         if (obj instanceof List) {
             List<String> xs = (List<String>) obj;
-            return xs.get(random.nextInt(xs.size()));
+            return xs.get(context.getRandom().nextInt(xs.size()));
         }
 
         return String.valueOf(obj);
@@ -45,6 +43,7 @@ public class DefaultFetcher implements DeetaFetcher {
         return map;
     }
 
+    @SuppressWarnings("unchecked")
     private Object fetchRecursive(String key, Map<String, Object> m) {
         String[] keys = key.split("\\.");
         String currentKey = keys[0];

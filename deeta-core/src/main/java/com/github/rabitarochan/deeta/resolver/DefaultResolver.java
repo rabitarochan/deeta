@@ -1,8 +1,6 @@
 package com.github.rabitarochan.deeta.resolver;
 
-import com.github.rabitarochan.deeta.DeetaFetcher;
-import com.github.rabitarochan.deeta.DeetaRandom;
-import com.github.rabitarochan.deeta.DeetaResolver;
+import com.github.rabitarochan.deeta.*;
 
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -24,38 +22,75 @@ public class DefaultResolver implements DeetaResolver {
 
     private final DeetaRandom random;
 
+    private final DeetaGenerators generators;
+
     public DefaultResolver(DeetaFetcher fetcher, DeetaRandom random) {
         this.fetcher = fetcher;
         this.random = random;
+        this.generators = DeetaGenerators.getInstance();
     }
 
     @Override
-    public String resolve(String key, String[] args) {
-        String res = fetcher.fetch(key);
+    public String resolve(String key, DeetaContext context) {
+        return resolveInternal(key, context);
+    }
+
+    protected String resolveInternal(String key, DeetaContext context) {
+        String res = key;
         res = numeric(res);
-        res = variable(res);
+        res = variable(res, context);
         res = unescape(res);
         return res;
     }
 
     private String numeric(String s) {
         String res = s;
-        Matcher m = NUMERIC_PATTERN.matcher(res);
-        while (m.find()) {
+        while (true) {
+            Matcher m = NUMERIC_PATTERN.matcher(res);
+            if (!m.find()) {
+                break;
+            }
+
             String matchString = m.group();
             res = m.replaceFirst(generateNumeric(matchString.length()));
         }
         return res;
     }
 
-    private String variable(String s) {
+    private String variable(String s, DeetaContext context) {
         String res = s;
-        Matcher m = VARIABLE_PATTERN.matcher(res);
-        while (m.find()) {
+        while (true) {
+            Matcher m = VARIABLE_PATTERN.matcher(res);
+            if (!m.find()) {
+                break;
+            }
+
             String matchString = m.group();
             String key = matchString.substring(2, matchString.length() - 1);
             LOG.finer("key:" + key);
-            String replacement = resolve(key, new String[] {});
+
+            // key fix
+            int dotCount = countDot(key);
+            if (dotCount == 0) {
+                DeetaGenerator generator = generators.resolve(key);
+                if (generator == null) {
+                    res = m.replaceFirst("NULL"); // TODO unresolve key.
+                    continue;
+                } else {
+                    res = m.replaceFirst(generator.generate(context));
+                    continue;
+                }
+            } else if (dotCount == 1) {
+                DeetaGenerator generator = generators.resolve(key);
+                if (generator != null) {
+                    res = m.replaceFirst(generator.generate(context));
+                    continue;
+                }
+
+                key = "default." + key;
+            }
+
+            String replacement = resolve(fetcher.fetch(key, context), context);
             res = m.replaceFirst(replacement);
         }
         return res;
@@ -77,6 +112,22 @@ public class DefaultResolver implements DeetaResolver {
 
     private String repeatString(String s, int length) {
         return new String(new char[length]).replace("\0", s);
+    }
+
+    private int countDot(String s) {
+        int length = s.length();
+        int count = 0;
+        int startIndex = 0;
+        while (true) {
+            int res = s.indexOf(".", startIndex);
+            if (res == -1) {
+                break;
+            }
+
+            startIndex = res + 1;
+            count++;
+        }
+        return count;
     }
 
 }
