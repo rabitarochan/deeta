@@ -11,6 +11,11 @@ test:
     multiple: "###-###"
     escapedSimple: "\\#\\#\\#"
     escapedMultiple: "\\#\\#\\#-\\#\\#\\#"
+  character:
+    simple: "???"
+    multiple: "???-???"
+    escapedSimple: "\\?\\?\\?"
+    escapedMultiple: "\\?\\?\\?-\\?\\?\\?"
   case3:
     variable: "${test.case1.singleValue}"
     multipleVariables: "${test.case1.singleValue} and ${test.case1.multipleValues}"

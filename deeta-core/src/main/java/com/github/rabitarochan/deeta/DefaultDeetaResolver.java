@@ -13,13 +13,11 @@ public class DefaultDeetaResolver implements DeetaResolver {
 
     private static final String DEFAULT_KEY_PREFIX = "deeta";
 
-    private static final String VARIABLE_PATTERN_STRING = "(?<!\\\\)\\$\\{.+?\\}";
+    private static final Pattern VARIABLE_PATTERN = Pattern.compile("(?<!\\\\)\\$\\{.+?\\}");
 
-    private static final String NUMERIC_PATTERN_STRING = "(?<!\\\\)#+";
+    private static final Pattern NUMERIC_PATTERN = Pattern.compile("(?<!\\\\)#+");
 
-    private static final Pattern VARIABLE_PATTERN = Pattern.compile(VARIABLE_PATTERN_STRING);
-
-    private static final Pattern NUMERIC_PATTERN = Pattern.compile(NUMERIC_PATTERN_STRING);
+    private static final Pattern CHARACTER_PATTERN = Pattern.compile("(?<!\\\\)\\?+");
 
     private final DeetaFetcher fetcher;
 
@@ -46,6 +44,7 @@ public class DefaultDeetaResolver implements DeetaResolver {
     protected String resolveInternal(String key, DeetaContext context) {
         String res = key;
         res = resolveNumeric(res);
+        res = resolveCharacter(res);
         res = variable(res, context);
         res = unescape(res);
         return res;
@@ -63,6 +62,18 @@ public class DefaultDeetaResolver implements DeetaResolver {
 
             String matchString = m.group();
             res = m.replaceFirst(generateNumeric(matchString.length()));
+        }
+        return res;
+    }
+
+    protected String resolveCharacter(String s) {
+        String res = s;
+        while (true) {
+            Matcher m = CHARACTER_PATTERN.matcher(res);
+            if (!m.find()) { break; }
+
+            String matchString = m.group();
+            res = m.replaceFirst(generateCharacter(matchString.length()));
         }
         return res;
     }
@@ -121,6 +132,7 @@ public class DefaultDeetaResolver implements DeetaResolver {
     private String unescape(String s) {
         String res = s;
         res = res.replace("\\#", "#");
+        res = res.replace("\\?", "?");
         res = res.replace("\\$", "$");
         return res;
     }
@@ -136,6 +148,14 @@ public class DefaultDeetaResolver implements DeetaResolver {
             String s = prefix + String.valueOf(random.nextLong(0, max));
             sb.append(StringUtils.right(s, genLen));
             len -= genLen;
+        }
+        return sb.toString();
+    }
+
+    private String generateCharacter(int length) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append((char) (97 + random.nextInt(26)));
         }
         return sb.toString();
     }
