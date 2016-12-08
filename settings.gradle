@@ -1,3 +1,4 @@
 rootProject.name = 'deeta'
 
 include 'deeta-core'
+include 'deeta-cli'
